@@ -1,0 +1,314 @@
+/*****************************************************************************/
+/*__________________________- Final- Project_________________________*/
+/*------------|--------------------------------------------------------------*/
+/* Programmer | Dror-Tam                                        */
+
+/*------------|--------------------------------------------------------------*/
+/* File Name  | project.pl                                                   */
+/*------------|--------------------------------------------------------------*/
+/* Description| An expert system which gives you the information about       */
+/*			the type and the symptoms of mental illness          */
+/*------------|--------------------------------------------------------------*/
+/*****************************************************************************/
+
+
+
+/****************************************************************************/
+/**************************knowledge base************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+
+:-op(800,fx,if).
+:-op(700,xfx,then).
+:-op(300,xfy,or).
+:-op(200,xfy,and).
+
+fact('weakness, dizziness and fainting.').
+fact('low body weight and eating a small amount of food.').
+fact('enormous fear of gaining weight or obesity, despite the patient being underweight.').
+fact('vomiting or using laxatives or enemas to rid the body of food.').
+fact('defects in teeth and gums due to the acidity in the vomit.').
+fact('eating secretly ,not near people ,out of shame at the amounts of food eaten.').
+fact('low social skill and falling victim to bullying.').
+fact('predisposition to depression and anxiety.').
+fact('repetitive and restricted behavior.').
+fact('normal social skill.').
+fact('reading writing and spelling problem.').
+fact('impaired communication.').
+fact('tics are sometimes accompanied by voices.').
+fact('elevated moods and very high self esteem.').
+fact('decreased need for sleep and eating.').
+fact('hallucinations and false thoughts.').
+fact('hallucinations, delusions and disorganized behavior.').
+fact('self neglect, emotional numbness and avoidance of social connections.').
+fact('difficulty in understanding information and difficulty concentrating.').
+fact('delayed physical growth.').
+fact('eyes slanted upwards ,small ears and flattened nose bridge.').
+fact('intellectual disability brain function.').
+fact('elongated face and enlarged auricles.').
+fact('strong desire to be thin.').
+fact('abnormal eating habits.').
+fact('affected nervous system.').
+fact('abnormal brain function.').
+fact('false beliefs.').
+fact('manic depressive.').
+fact('abnormalities in genome.').
+fact('mutation in the early stages of fetal development.').
+fact('verbal or physical violent behavior.').
+fact('low social skill.').
+
+
+% if-then rules
+
+if
+   'Eating - Disorder :'
+    and
+    'weakness, dizziness and fainting.'
+    and
+    'low body weight and eating a small amount of food.'
+    and
+    'enormous fear of gaining weight or obesity, despite the patient being underweight.'
+then
+    anorexia.
+
+if
+   'Eating - Disorder :'
+   and
+   'vomiting or using laxatives or enemas to rid the body of food.'
+   and
+   'defects in teeth and gums due to the acidity in the vomit.'
+   and
+   'eating secretly ,not near people ,out of shame at the amounts of food eaten.'
+then
+   bulimia.
+
+if
+  'Neurodevelopmental - Disorder :'
+   and
+   'low social skill and falling victim to bullying.'
+   and
+   'predisposition to depression and anxiety.'
+   and
+   'repetitive and restricted behavior.'
+then
+    asperger_syndrome.
+
+if
+  'Neurodevelopmental - Disorder :'
+   and
+   'normal social skill.'
+   and
+   'reading writing and spelling problem.'
+then
+    dyslexia.
+
+if
+  'Genetic - Disorder :'
+   and
+   'delayed physical growth.'
+   and
+   'eyes slanted upwards ,small ears and flattened nose bridge.'
+   and
+   'intellectual disability brain function.'
+then
+    down_syndrome.
+
+if
+  'Genetic - Disorder :'
+   and
+   'elongated face and enlarged auricles.'
+   and
+   'intellectual disability brain function.'
+then
+   martin_bell_syndrome.
+
+if
+  'Neurodevelopmental - Disorder :'
+   and
+   'low social skill.'
+   and
+   'impaired communication.'
+   and
+   'verbal or physical violent behavior.'
+then
+   autism.
+
+if
+  'Neurodevelopmental - Disorder :'
+   and
+   'normal social skill.'
+   and
+   'tics are sometimes accompanied by voices.'
+then
+    tourette_syndrome.
+
+if
+  'Psychotic - Disorder :'
+   and
+   'elevated moods and very high self esteem.'
+   and
+   'decreased need for sleep and eating.'
+   and
+   'hallucinations and false thoughts.'
+then
+   manic_depression.
+
+if
+  'Psychotic - Disorder :'
+   and
+   'hallucinations, delusions and disorganized behavior.'
+   and
+   'self neglect, emotional numbness and avoidance of social connections.'
+   and
+   'difficulty in understanding information and difficulty concentrating.'
+then
+   schizophrenia.
+
+if
+   'abnormal eating habits.'
+   or
+   'strong desire to be thin.'
+then
+    'Eating - Disorder :'.
+
+if
+  'affected nervous system.'
+  or
+  'abnormal brain function.'
+then
+    'Neurodevelopmental - Disorder :'.
+
+
+if
+   'false beliefs.'
+   or
+   'manic depressive.'
+then
+    'Psychotic - Disorder :'.
+
+
+if
+  'abnormalities in genome.'
+  or
+  'mutation in the early stages of fetal development.'
+then
+   'Genetic - Disorder :'.
+
+
+% backward chaining interpreter for if-then rules
+
+
+:- op(800,fx,if).
+:- op(700,xfx,then).
+:- op(300,xfy,or).
+:- op(200,xfy,and).
+
+
+is_true(P) :-
+    fact(P).
+
+is_true(P) :-
+    if Condition then P,
+    is_true(Condition).
+
+is_true(P1 and P2 and P3) :-
+    is_true(P1),
+    is_true(P2),
+    is_true(P3),
+    write(P1),nl,
+    write(P2),nl,
+    write(P3).
+
+is_true(P1 and P2 and P3 and P4) :-
+    is_true(P1),
+    is_true(P2),
+    is_true(P3),
+    is_true(P4),
+    write(P1),nl,
+    write(P2),nl,
+    write(P3),nl,
+    write(P4).
+
+
+is_true(P1 or P2) :-
+    is_true(P1)
+    ;
+    is_true(P2).
+
+
+
+
+% this procedure generate proof trees as "how" explanation
+
+:- op(800,xfx,<=).
+:- op(700,fx,if).
+:- op(600,xfx,then).
+:- op(300,xfy,or).
+:- op(200,xfy,and).
+
+how(P,P) :-
+    fact(P).
+
+how(P,P <= CondProof) :-
+    if Cond then P,
+    how(Cond,CondProof).
+
+how(P1 and P2 and P3, Proof1 and Proof2 and Proof3) :-
+    how(P1,Proof1),
+    how(P2,Proof2),
+    how(P3,Proof3).
+
+how(P1 and P2 and P3 and P4, Proof1 and Proof2 and Proof3 and Proof4) :-
+    how(P1,Proof1),
+    how(P2,Proof2),
+    how(P3,Proof3),
+    how(P4,Proof4).
+
+how(P1 or P2, Proof) :-
+    how(P1,Proof)
+
+    ;
+
+    how(P2,Proof).
+
+
+
+
+% the desease procedore of the programm
+% which start the progarmm
+
+disease :-
+
+
+   write('THIS IS AN EXPERT SYSTEM'),
+   nl,
+   write('WHICH HELPS YOU TO KNOW'),
+   nl,
+   write('THE TYPE AND THE SYMPTOMS OF THESE MENTAL DISEASES : '),
+   nl,
+   write('  anorexia, bulimia, asperger_syndrome, dyslexia, down_syndrome,  manic_depression  '),
+   nl,
+   write('        martin_bell_syndrome, autism, tourette_syndrome, and schizophrenia          '),
+   nl,
+   nl,
+   write('PLEASE ENTER A DISEASE : '),
+   nl,
+   nl,
+   nl,
+   read(X),
+   write('THE TYPE AND THE SYMPTOMS OF THIS DISEASE ARE: '),
+   nl,
+   nl,
+   is_true(X),
+   nl,
+   nl,
+   write('YOU CAN ASK HOW QUESTION BY PRESSING: how(type of disease,X).'),
+   nl,
+   write('OR YOU CAN CHOOSE ANOTHR DESEASE BY PRESSING THE WORD: disease.'),
+   nl,
+   nl.
+
+
+
+
